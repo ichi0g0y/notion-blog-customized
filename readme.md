@@ -1,4 +1,12 @@
-# Notion Blog
+# Caution
+
+これは Notion Blog のカスタマイズ内容を公開するために作られたサンプルリポジトリです。
+オリジナルのサンプルは[こちら](https://github.com/ijjk/notion-blog)
+
+This is Customized Notion Blog Sample!
+Original Repository -> [https://github.com/ijjk/notion-blog](https://github.com/ijjk/notion-blog)
+
+# Notion Blog Cutomized
 
 This is an example Next.js project that shows Next.js' upcoming SSG (static-site generation) support using Notion's **private** API for a backend.
 

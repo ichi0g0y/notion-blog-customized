@@ -7,7 +7,7 @@ export default ({ Component, pageProps }) => (
 
     <footer>
       <span>Deploy your own!</span>
-      <ExtLink href="https://zeit.co/new/project?template=https://github.com/ijjk/notion-blog/tree/master">
+      <ExtLink href="https://zeit.co/new/project?template=https://github.com/ichi0g0y/notion-blog-customized/tree/master">
         <img
           src="https://zeit.co/button"
           height={46}
@@ -17,7 +17,7 @@ export default ({ Component, pageProps }) => (
       </ExtLink>
       <span>
         or{' '}
-        <ExtLink href="https://github.com/ijjk/notion-blog">
+        <ExtLink href="https://github.com/ichi0g0y/notion-blog-customized">
           view source
         </ExtLink>
       </span>
