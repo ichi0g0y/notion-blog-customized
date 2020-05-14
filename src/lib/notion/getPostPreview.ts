@@ -11,7 +11,7 @@ export async function getPostPreview(pageId: string) {
   blocks = values(data.recordMap.block)
 
   for (let i = 0; i < blocks.length; i++) {
-    if (blocks[i].value.type === 'divider') {
+    if (blocks[i].value.type === 'divider' || blocks[i].value.type === 'table_of_contents') {
       dividerIndex = i
       break
     }
