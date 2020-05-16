@@ -70,6 +70,14 @@ export default ({ posts = [], preview }) => {
         {posts.map(post => {
           return (
             <div className={blogStyles.postPreview} key={post.Slug}>
+              {post.cover ? (
+                <img
+                  src={`/api/asset?assetUrl=${encodeURIComponent(
+                    post.cover.url as any
+                  )}&blockId=${post.cover.blockId}`}
+                  className={blogStyles.postPreviewCover}
+                />
+              ) : null}
               <h3>
                 <Link href="/blog/[slug]" as={getBlogLink(post.Slug)}>
                   <div className={blogStyles.titleContainer}>

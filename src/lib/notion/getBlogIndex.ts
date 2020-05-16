@@ -69,9 +69,11 @@ export default async function getBlogIndex(previews = true) {
           .map(async postKey => {
             await sema.acquire()
             const post = postsTable[postKey]
-            post.preview = post.id
+            const preview = post.id
               ? await getPostPreview(postsTable[postKey].id)
-              : []
+              : { cover: null, blocks: [] }
+            post.preview = preview.blocks
+            post.cover = preview.cover ? preview.cover : null
             sema.release()
           })
       )
