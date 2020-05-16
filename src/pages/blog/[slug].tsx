@@ -33,6 +33,7 @@ export async function getStaticProps({ params: { slug }, preview }) {
   }
   const postData = await getPageData(post.id)
   post.content = postData.blocks
+  post.cover = postData.cover
 
   for (let i = 0; i < postData.blocks.length; i++) {
     const { value } = postData.blocks[i]
@@ -467,9 +468,19 @@ const RenderPost = ({ post, redirect, preview }) => {
     }
   }
 
+  // cover
+  const coverURL = post.cover
+    ? `/api/asset?assetUrl=${encodeURIComponent(
+        post.cover.url as any
+      )}&blockId=${post.cover.blockId}`
+    : undefined
+  const ogImageReplace = coverURL
+    ? `https://notion-blog-customized.now.sh/${coverURL}`
+    : undefined
+
   return (
     <>
-      <Header titlePre={post.Page} />
+      <Header titlePre={post.Page} ogImageReplace={ogImageReplace} />
       {preview && (
         <div className={blogStyles.previewAlertContainer}>
           <div className={blogStyles.previewAlert}>
@@ -482,6 +493,9 @@ const RenderPost = ({ post, redirect, preview }) => {
         </div>
       )}
       <div className={blogStyles.post}>
+        {coverURL ? (
+          <img src={coverURL} style={{ width: '100%', boxShadow: 'none' }} />
+        ) : null}
         <h1>{post.Page || ''}</h1>
         {post.Authors.length > 0 && (
           <div className="authors">By: {post.Authors.join(' ')}</div>

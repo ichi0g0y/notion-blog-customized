@@ -16,7 +16,7 @@ const navItems: { label: string; page?: string; link?: string }[] = [
 
 const ogImageUrl = 'https://notion-blog.now.sh/og-image.png'
 
-export default ({ titlePre = '' }) => {
+export default ({ titlePre = '', ogImageReplace = undefined }) => {
   const { pathname } = useRouter()
 
   return (
@@ -28,10 +28,10 @@ export default ({ titlePre = '' }) => {
           content="An example Next.js site using Notion for the blog"
         />
         <meta name="og:title" content="My Notion Blog" />
-        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image" content={ogImageReplace || ogImageUrl} />
         <meta name="twitter:site" content="ichi0g0y" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content={ogImageUrl} />
+        <meta name="twitter:image" content={ogImageReplace || ogImageUrl} />
       </Head>
       <ul>
         {navItems.map(({ label, page, link }) => (
