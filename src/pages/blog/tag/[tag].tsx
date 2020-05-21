@@ -1,24 +1,23 @@
 import Link from 'next/link'
-import Header from '../../components/header'
+import Header from '../../../components/header'
 
-import blogStyles from '../../styles/blog.module.css'
-import sharedStyles from '../../styles/shared.module.css'
+import blogStyles from '../../../styles/blog.module.css'
+import sharedStyles from '../../../styles/shared.module.css'
 
 import {
   getBlogLink,
   getDateStr,
   postIsPublished,
   getTagLink,
-} from '../../lib/blog-helpers'
-import { textBlock } from '../../lib/notion/renderers'
-import getNotionUsers from '../../lib/notion/getNotionUsers'
-import getBlogIndex from '../../lib/notion/getBlogIndex'
+} from '../../../lib/blog-helpers'
+import { textBlock } from '../../../lib/notion/renderers'
+import getNotionUsers from '../../../lib/notion/getNotionUsers'
+import getBlogIndex from '../../../lib/notion/getBlogIndex'
 
-export async function getStaticProps({ preview }) {
+export async function getStaticProps({ params: { tag }, preview }) {
   const postsTable = await getBlogIndex()
 
   const authorsToGet: Set<string> = new Set()
-  let allTags: string[] = []
   const posts: any[] = Object.keys(postsTable)
     .map(slug => {
       const post = postsTable[slug]
@@ -30,12 +29,11 @@ export async function getStaticProps({ preview }) {
       for (const author of post.Authors) {
         authorsToGet.add(author)
       }
-      allTags = allTags.concat(post.Tags)
+      if (post.Tags.indexOf(tag) === -1) return null
       return post
     })
     .filter(Boolean)
 
-  allTags = allTags.filter((tag, index, orig) => orig.indexOf(tag) === index)
   const { users } = await getNotionUsers([...authorsToGet])
 
   posts.map(post => {
@@ -46,13 +44,33 @@ export async function getStaticProps({ preview }) {
     props: {
       preview: preview || false,
       posts,
-      allTags,
+      tag,
     },
     revalidate: 10,
   }
 }
 
-export default ({ posts = [], allTags = [], preview }) => {
+// Return our list of blog posts to prerender
+export async function getStaticPaths() {
+  const postsTable = await getBlogIndex()
+  let allTags: string[] = []
+  Object.keys(postsTable).forEach(slug => {
+    const post = postsTable[slug]
+    // remove draft posts in production
+    if (!postIsPublished(post)) {
+      return null
+    }
+    allTags = allTags.concat(post.Tags)
+  })
+  allTags = allTags.filter((tag, index, orig) => orig.indexOf(tag) === index)
+
+  return {
+    paths: allTags.map(tag => getTagLink(tag)),
+    fallback: true,
+  }
+}
+
+export default ({ tag, posts = [], preview }) => {
   return (
     <>
       <Header titlePre="Blog" />
@@ -68,23 +86,9 @@ export default ({ posts = [], allTags = [], preview }) => {
         </div>
       )}
       <div className={`${sharedStyles.layout} ${blogStyles.blogIndex}`}>
-        <h1>My Notion Blog</h1>
+        <h1>My Notion Blog - {tag} を含む記事</h1>
         {posts.length === 0 && (
           <p className={blogStyles.noPosts}>There are no posts yet</p>
-        )}
-        {posts.length > 0 && allTags.length > 0 && (
-          <>
-            <div className={blogStyles.tagsTitle}>Tags:</div>
-            <div className={blogStyles.tags}>
-              {allTags &&
-                allTags.length > 0 &&
-                allTags.map(tag => (
-                  <Link href="/blog/tag/[tag]" as={getTagLink(tag)}>
-                    <span className={blogStyles.tag}>{tag}</span>
-                  </Link>
-                ))}
-            </div>
-          </>
         )}
         {posts.map(post => {
           return (
