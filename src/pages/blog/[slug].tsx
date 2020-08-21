@@ -399,7 +399,12 @@ const RenderPost = ({ post, redirect, preview }) => {
         case 'bookmark':
           const { link, title, description } = properties
           const { format = {} } = value
-          renderBookmark({ link, title: title[0][0], description, format })
+          renderBookmark({
+            link,
+            title: title ? title[0][0] : link[0][0],
+            description,
+            format,
+          })
           break
         case 'code': {
           if (properties.title) {
